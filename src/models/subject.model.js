@@ -6,10 +6,11 @@ const subjectSchema = new mongoose.Schema(
     description: { type: String },
     imgUrl: { type: String },
     likes: { type: Number, default: 0 },
+    lastOpen: { type: Date },
   },
   { timestamps: true }
 );
 
 const Subject = mongoose.model("Subject", subjectSchema);
 
-module.exports = Subject
+module.exports = Subject;
