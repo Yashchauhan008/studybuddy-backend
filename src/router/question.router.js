@@ -4,6 +4,6 @@ const { addQuestion, getAllQuestions, getQuestionsBySubject } = require('../cont
 
 questionRouter.post('/',addQuestion);
 questionRouter.get('/',getAllQuestions);
-questionRouter.get('/questions/subject/:subjectId', getQuestionsBySubject);
+// questionRouter.get('/questions/subject/:subjectId', getQuestionsBySubject);
 
 module.exports = questionRouter

@@ -108,4 +108,72 @@ const addUser = async (req, res) => {
     return res.status(500).json({ message: `Internal server error: ${error.message}` });
   }
 };
-module.exports = { signUp, signIn, addUser };
+
+const allUser = async (req, res) => {
+  try {
+    // Find all users and project only the email field
+    const users = await User.find();
+    
+    // Return the emails in the response
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+const complateQuestion = async (req, res) => {
+  const { username, questionId, isChecked } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (isChecked) {
+      // Add questionId to completedQuestions if not already present
+      if (!user.completedQuestions.includes(questionId)) {
+        user.completedQuestions.push(questionId);
+      }
+    } else {
+      // Remove questionId from completedQuestions
+      user.completedQuestions = user.completedQuestions.filter(
+        (id) => id.toString() !== questionId
+      );
+    }
+
+    await user.save();
+    res.status(200).json({ completedQuestions: user.completedQuestions });
+  } catch (error) {
+    console.error('Error updating completed questions:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+
+};
+
+
+const getCompletedQuestionIdsByUsername = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    // Find user by username
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Extract completed question IDs
+    const completedQuestionIds = user.completedQuestions.map(question => question.toString());
+
+    res.status(200).json({ completedQuestionIds });
+  } catch (error) {
+    console.error('Error fetching completed question IDs:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+module.exports = { signUp, signIn, addUser, allUser,complateQuestion,getCompletedQuestionIdsByUsername };
