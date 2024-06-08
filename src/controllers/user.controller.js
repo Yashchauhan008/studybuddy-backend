@@ -7,59 +7,6 @@ const User = require("../models/user.model");
 const bcryptSecret = process.env.BCRYPTSECRET;
 const jwtSecret = process.env.JWT_SECRET;
 
-// Sign-Up Controller
-const signUp = async (req, res) => {
-  const { username, email, password } = req.body;
-
-  try {
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ error: 'User already exists' });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password + bcryptSecret, salt);
-
-    user = new User({ username, email, password: hashedPassword });
-    await user.save();
-
-    const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
-
-    res.status(201).json({ message: 'User registered successfully', token });
-  } catch (error) {
-    res.status(500).json({ error: 'Server error' });
-  }
-};
-
-// Sign-In Controller
-const signIn = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid credentials' });
-    }
-
-    const isMatch = await bcrypt.compare(password + bcryptSecret, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid credentials' });
-    }
-
-    // Update lastLogin field
-    user.lastLogin = Date.now();
-    await user.save();
-
-    const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
-
-    res.status(200).json({ message: 'User signed in successfully', token });
-  } catch (error) {
-    res.status(500).json({ error: 'Server error' });
-  }
-};
-
 // Add User Without Password Controller
 const addUser = async (req, res) => {
   try {
@@ -176,4 +123,4 @@ const getCompletedQuestionIdsByUsername = async (req, res) => {
 };
 
 
-module.exports = { signUp, signIn, addUser, allUser,complateQuestion,getCompletedQuestionIdsByUsername };
+module.exports = { addUser, allUser,complateQuestion,getCompletedQuestionIdsByUsername };

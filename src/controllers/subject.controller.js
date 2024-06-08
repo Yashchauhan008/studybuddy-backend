@@ -2,7 +2,7 @@ const Subject = require('../models/subject.model');
 const Question = require('../models/question.model')
 // Controller to add a new subject
 const newSubject = async (req, res) => {
-    const { name, description, imgUrl } = req.body;
+    const { name, description, imgUrl, cheatsheet } = req.body;
 
     try {
         const existingSubject = await Subject.findOne({ name });
@@ -11,7 +11,7 @@ const newSubject = async (req, res) => {
             return res.status(400).json({ error: 'Subject already exists' });
         }
 
-        const subject = new Subject({ name, description, imgUrl });
+        const subject = new Subject({ name, description, imgUrl,cheatsheet });
         await subject.save();
 
         res.status(201).json({ message: 'Subject registered successfully' });
@@ -74,22 +74,35 @@ const getSubjectByName = async (req, res) => {
         return res.status(404).json({ error: 'Subject not found' });
       }
   
-      // Find all questions associated with this subject and populate the code field
-      const questions = await Question.find({ subject: subjectId }).populate('code');
+      // Find all questions associated with this subject and populate all fields
+      const questions = await Question.find({ subject: subjectId })
+        .populate('answers')
+        .populate('codes')
+        .populate('images')
+        .populate('resources');
   
-      // Create a new array with questions and their associated code data
-      const questionsWithCodeData = questions.map(question => {
+      // Create a new array with questions and their associated data
+      const questionsWithAssociatedData = questions.map(question => {
         const questionData = question.toObject();
-        if (question.code) {
-          questionData.code = question.code; // Include the entire Code document
+        if (question.answers.length > 0) {
+          questionData.answers = question.answers; // Include all Answer documents
+        }
+        if (question.codes.length > 0) {
+          questionData.codes = question.codes; // Include all Code documents
+        }
+        if (question.images.length > 0) {
+          questionData.images = question.images; // Include all Image documents
+        }
+        if (question.resources.length > 0) {
+          questionData.resources = question.resources; // Include all Resource documents
         }
         return questionData;
       });
   
-      // Attach the questions with code data to the subject object
-      const subjectWithQuestions = { ...subject._doc, questions: questionsWithCodeData };
+      // Attach the questions with associated data to the subject object
+      const subjectWithQuestions = { ...subject._doc, questions: questionsWithAssociatedData };
   
-      // Send the subject object along with its associated questions and code data
+      // Send the subject object along with its associated questions and data
       res.json(subjectWithQuestions);
     } catch (err) {
       console.error(err);

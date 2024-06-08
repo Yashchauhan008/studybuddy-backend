@@ -5,11 +5,13 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true},
     email: { type: String, required: true, unique: true },
     password: { type: String },
-    prfileUrl:{type:String},
+    profileUrl:{type:String},
     completedQuestions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Question' }],
-    role: { type: String, enum: ['admin', 'student'], default: 'student' },
+    role: { type: String, enum: ['admin', 'student','ta'], default: 'student' },
     workplace:{type:String},
     lastLogin:{ type:Date},
+    taRequesst:{type:Boolean},
+    TaId:{type:String},
     // subscription: {
     //   type: { type: String, enum: ['none', 'all', 'subject'], default: 'none' }, // Subscription type
     //   subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subject' }] // Subscribed subjects

@@ -6,6 +6,8 @@ const subjectSchema = new mongoose.Schema(
     description: { type: String },
     imgUrl: { type: String },
     likes: { type: Number, default: 0 },
+    question:{ type:Number ,default:0},
+    cheatsheet:{type:String},
     lastOpen: { type: Date },
   },
   { timestamps: true }
