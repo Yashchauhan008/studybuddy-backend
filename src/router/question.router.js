@@ -1,8 +1,10 @@
 const express = require('express');
 const questionRouter = express.Router();
-const { addQuestion } = require('../controllers/question.controller');
+const { addNewQuestion,getQuestionWithAllData} = require('../controllers/question.controller');
 
-questionRouter.post('/',addQuestion);
-// questionRouter.get('/questions/subject/:subjectId', getQuestionsBySubject);
+questionRouter.post('/', addNewQuestion);
+questionRouter.get('/:questionId/all-data', getQuestionWithAllData);
 
-module.exports = questionRouter
+// ... other routes ...
+
+module.exports = questionRouter;

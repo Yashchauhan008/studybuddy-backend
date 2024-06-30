@@ -63,7 +63,7 @@ const getSubjectByName = async (req, res) => {
   };
 
 
-  const getSubjectWithQuestions = async (req, res) => {
+const getSubjectWithQuestions = async (req, res) => {
     const subjectId = req.params.subjectId;
   
     try {
@@ -108,6 +108,34 @@ const getSubjectByName = async (req, res) => {
       console.error(err);
       res.status(500).json({ error: 'Server error' });
     }
+};
+
+  const updateSubjectById = async (req, res) => {
+    const { id } = req.params;
+    const { name, description, imgUrl, likes } = req.body;
+  
+    try {
+      // Find the subject by ID
+      const subject = await Subject.findById(id);
+  
+      if (!subject) {
+        return res.status(404).json({ message: "Subject not found" });
+      }
+  
+      // Update fields individually if they are present in the request body
+      if (name !== undefined) subject.name = name;
+      if (description !== undefined) subject.description = description;
+      if (imgUrl !== undefined) subject.imgUrl = imgUrl;
+      if (likes !== undefined) subject.likes = likes;
+  
+      // Save the updated subject
+      const updatedSubject = await subject.save();
+  
+      res.status(200).json(updatedSubject);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
   };
   
-module.exports = { newSubject, getAllSubjects, getSubjectById,getSubjectByName, getSubjectWithQuestions };
+  
+module.exports = { newSubject, getAllSubjects, getSubjectById,getSubjectByName, getSubjectWithQuestions,updateSubjectById };
