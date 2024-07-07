@@ -60,4 +60,17 @@ const addCode = async (req, res) => {
   }
 };
 
-module.exports = { addCode };
+const deleteCode = async (req,res)=>{
+  const { id } = req.body;
+  try {
+    const deletedCode = await Code.findByIdAndDelete(id);
+    if (!deletedCode) {
+      return res.status(404).send({ message: "Code not found" });
+    }
+    res.status(200).send({ message: "Code deleted successfully" });
+  } catch (error) {
+    res.status(500).send({ message: "Error deleting code", error });
+  }
+}
+
+module.exports = { addCode,deleteCode };
