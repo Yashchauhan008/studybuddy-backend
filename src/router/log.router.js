@@ -4,8 +4,8 @@ const { createLog, getLogsByUsername, getAllLogsSortedByTime } = require('../con
 
 const logRouter = express.Router();
 
-logRouter.post('/add', createLog);
-logRouter.get('/all', getAllLogsSortedByTime); // New route for all logs sorted by time
-logRouter.get('/user/:username', getLogsByUsername); // Updated route for username
+logRouter.post('/add', createLog);  // POST to add a new log
+logRouter.get('/all', getAllLogsSortedByTime);  // GET all logs sorted by time
+logRouter.get('/user/:username', getLogsByUsername);  // GET logs by username
 
 module.exports = logRouter;

@@ -4,13 +4,13 @@ const Log = require('../models/log.model');
 // POST: Create a log
 const createLog = async (req, res) => {
     try {
-        const { username, message } = req.body;
+        const { username, message, action } = req.body;  // Now expecting action as well
 
-        if (!username || !message) {
-            return res.status(400).json({ message: 'Username and message are required.' });
+        if (!username || !message || !action) {
+            return res.status(400).json({ message: 'Username, message, and action are required.' });
         }
 
-        const log = new Log({ username, message });
+        const log = new Log({ username, message, action });  // Include action in log
         await log.save();
 
         res.status(201).json({ message: 'Log created successfully.', log });
@@ -18,7 +18,8 @@ const createLog = async (req, res) => {
         res.status(500).json({ message: 'Server error.', error });
     }
 };
-// controllers/logController.js (extend this file)
+
+// GET: Get logs by username
 const getLogsByUsername = async (req, res) => {
     try {
         const { username } = req.params; // Extract username from URL params
@@ -35,7 +36,7 @@ const getLogsByUsername = async (req, res) => {
     }
 };
 
-// controllers/logController.js (extend this file)
+// GET: Get all logs sorted by timestamp
 const getAllLogsSortedByTime = async (req, res) => {
     try {
         const logs = await Log.find().sort({ timestamp: -1 }); // Sort by timestamp descending
