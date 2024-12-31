@@ -17,6 +17,7 @@ const imageRouter = require('./src/router/image.router');
 const codeRouter =require('./src/router/code.router');
 const answerRouter = require('./src/router/answer.router')
 const resourceRouter = require('./src/router/resource.router')
+const logRouter = require("./src/router/log.router")
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -27,6 +28,7 @@ app.use("/code",codeRouter)
 app.use("/image",imageRouter)
 app.use("/answer",answerRouter)
 app.use("/resource",resourceRouter)
+app.use("/log",logRouter)
 app.use(express.json())
 
 app.get("/",(req,res)=>{
