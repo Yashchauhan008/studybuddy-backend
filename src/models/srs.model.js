@@ -13,6 +13,6 @@ const srsSchema = new mongoose.Schema(
   }
 );
 
-const Srs = mongoose.model("srs", srsSchema);
+const Srs = mongoose.model("Srs", srsSchema);
 
 module.exports = Srs;
