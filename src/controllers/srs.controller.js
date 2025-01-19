@@ -41,30 +41,6 @@ const deleteSrs = async (req, res) => {
   }
 };
 
-// const updateSrs = async (req, res) => {
-//   const { id, srs_name, description, location, imgUrl } = req.body;
-
-//   try {
-//     const srs = await Srs.findOne({ id: id });
-//     if (!srs) {
-//       return res.status(404).json({ message: "srs not found" });
-//     }
-
-//     if (srs_name !== undefined) srs.srs_name = srs_name;
-//     if (description !== undefined) srs.description = description;
-//     if (location !== undefined) srs.location = location;
-//     if (imgUrl !== undefined) srs.imgUrl = imgUrl;
-
-//     const updatedSrs = await srs.save();
-
-//     res.status(200).json({
-//         message: "SRS updated successfully",
-//         updatedSrs,
-//       });
-//         } catch (error) {
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
 
 const updateSrs = async (req, res) => {
     const { srs_name, description, location, imgUrl } = req.body;

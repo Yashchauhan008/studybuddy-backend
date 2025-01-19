@@ -19,6 +19,10 @@ const answerRouter = require('./src/router/answer.router')
 const resourceRouter = require('./src/router/resource.router')
 const logRouter = require("./src/router/log.router");
 const srsRouter = require('./src/router/srs.router');
+const pyRouter = require('./src/router/py.routes');
+const mlRouter = require('./src/router/ml.routes');
+const csRouter = require('./src/router/cs.routes');
+const cnRouter = require('./src/router/cn.routes')
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -31,6 +35,10 @@ app.use("/answer",answerRouter)
 app.use("/resource",resourceRouter)
 app.use("/log",logRouter)
 app.use("/srs",srsRouter)
+app.use("/py",pyRouter)
+app.use("/ml",mlRouter)
+app.use("/cs",csRouter)
+app.use("/cn",cnRouter)
 app.use(express.json())
 
 app.get("/",(req,res)=>{
