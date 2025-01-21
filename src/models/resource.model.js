@@ -2,10 +2,16 @@ const mongoose = require("mongoose");
 
 const resourceSchema = new mongoose.Schema(
   {
-    description: { type: String, required: true },
-    url: { type: String, required: true },
+    id: { type: Number, required: true, unique: true },
+    name: { type: String, required: true }, // Replaces `py_name` and `srs_name`
+    description: { type: String },
+    location: { type: String },
+    imgUrl: { type: String },
+    resource: { type: String, required: true }, // Resource type as a string (e.g., "Srs", "Py")
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 const Resource = mongoose.model("Resource", resourceSchema);
