@@ -1,63 +1,3 @@
-// const Question = require('../models/question.model');
-// const Subject = require('../models/subject.model');
-// const mongoose = require('mongoose')
-// const Answer = require('../models/answer.model');
-// const Code = require('../models/code.model');
-// const Image = require('../models/image.model');
-// const Resource = require('../models/resource.model');
-
-// const addQuestion = async (req, res) => {
-//   const { subjectId, question, difficultyLevel, answerIds, codeIds, imageIds, resourceIds } = req.body;
-
-//   try {
-//     // Create a new question object
-//     const newQuestion = new Question({
-//       subject: subjectId,
-//       question,
-//       difficultyLevel,
-//     });
-
-//     // Save the new question
-//     await newQuestion.save();
-
-//     // Associate answers with the question
-//     if (answerIds && answerIds.length > 0) {
-//       const answers = await Answer.find({ _id: { $in: answerIds } });
-//       newQuestion.answers = answers.map(answer => answer._id);
-//       await newQuestion.save();
-//     }
-
-//     // Associate codes with the question
-//     if (codeIds && codeIds.length > 0) {
-//       const codes = await Code.find({ _id: { $in: codeIds } });
-//       newQuestion.codes = codes.map(code => code._id);
-//       await newQuestion.save();
-//     }
-
-//     // Associate images with the question
-//     if (imageIds && imageIds.length > 0) {
-//       const images = await Image.find({ _id: { $in: imageIds } });
-//       newQuestion.images = images.map(image => image._id);
-//       await newQuestion.save();
-//     }
-
-//     // Associate resources with the question
-//     if (resourceIds && resourceIds.length > 0) {
-//       const resources = await Resource.find({ _id: { $in: resourceIds } });
-//       newQuestion.resources = resources.map(resource => resource._id);
-//       await newQuestion.save();
-//     }
-
-//     // Send success response
-//     res.status(201).json({ message: 'Question added successfully', question: newQuestion });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Failed to add question' });
-//   }
-// };
-
-
-// module.exports = { addQuestion };
 
 const Question = require('../models/question.model');
 const Subject = require('../models/subject.model');
@@ -131,6 +71,64 @@ const updateQuestionPrivacy = async (req, res) => {
   }
 };
 
+// const deleteQuestionById = async (req, res) => {
+//   const { id } = req.params;
+
+//   try {
+//     // Check if the question exists
+//     const question = await Question.findById(id);
+//     if (!question) {
+//       return res.status(404).json({ success: false, message: "Question not found" });
+//     }
+
+//     // Delete the question
+//     await Question.findByIdAndDelete(id);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Question deleted successfully",
+//     });
+//   } catch (error) {
+//     console.error("Error deleting question:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "An error occurred while deleting the question",
+//     });
+//   }
+// };
+
+const deleteQuestionById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find the question to get its associated subject
+    const question = await Question.findById(id);
+    if (!question) {
+      return res.status(404).json({ success: false, message: "Question not found" });
+    }
+
+    const subjectId = question.subject;
+
+    // Delete the question
+    await Question.findByIdAndDelete(id);
+
+    // Decrement the question count for the associated subject
+    await Subject.findByIdAndUpdate(subjectId, { $inc: { question: -1 } });
+
+    return res.status(200).json({
+      success: true,
+      message: "Question deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting question:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while deleting the question",
+    });
+  }
+};
 
 
-module.exports = { addNewQuestion,getQuestionWithAllData,updateQuestionPrivacy};
+
+
+module.exports = { addNewQuestion,getQuestionWithAllData,updateQuestionPrivacy,deleteQuestionById};
